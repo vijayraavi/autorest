@@ -288,7 +288,6 @@ csharp:
 }
 
 let exitcode = 0;
-let args: CommandLineArgs;
 
 async function currentMain(autorestArgs: string[]): Promise<number> {
   if (autorestArgs[0] === "init") {
@@ -307,7 +306,7 @@ async function currentMain(autorestArgs: string[]): Promise<number> {
   }
 
   // parse the args from the command line
-  args = parseArgs([...autorestArgs, ...more]);
+  const args = parseArgs([...autorestArgs, ...more]);
 
   if ((!args.rawSwitches["message-format"]) || args.rawSwitches["message-format"] === "regular") {
     console.log(color(`> Loading AutoRest core      '${__dirname}' (${require("../package.json").version})`));
@@ -530,7 +529,6 @@ async function batch(api: AutoRest): Promise<void> {
  */
 async function mainImpl(): Promise<number> {
   let autorestArgs: Array<string> = [];
-  let exitcode: number = 0;
 
   try {
     autorestArgs = process.argv.slice(2);
@@ -558,18 +556,18 @@ async function mainImpl(): Promise<number> {
 }
 
 async function main() {
-  let exitcode = 0;
+  let exitCode = 0;
   try {
-    exitcode = await mainImpl();
+    exitCode = await mainImpl();
   } catch {
-    exitcode = 102;
+    exitCode = 102;
   }
   finally {
     try {
       await Shutdown();
     } catch  {
     } finally {
-      process.exit(exitcode);
+      process.exit(exitCode);
     }
   }
 }
