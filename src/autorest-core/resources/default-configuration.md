@@ -300,7 +300,7 @@ pipeline:
 
 OpenAPI definitions:
 
-``` yaml
+``` yaml $(input-file-swagger)
 pipeline:
   swagger-document/loader:
     # plugin: loader # IMPLICIT: default to last item if split by '/'
@@ -345,6 +345,11 @@ pipeline:
   openapi-document/identity:
     input: component-modifiers
     output-artifact: openapi-document
+    # END OF SWAGGER
+```
+
+``` yaml 
+pipeline:
   openapi-document/emitter:
     input: identity
     scope: scope-openapi-document/emitter
@@ -356,7 +361,7 @@ scope-swagger-document/emitter:
   output-uri-expr: |
     $config["output-file"] || 
     ($config.namespace ? $config.namespace.replace(/:/g,'_') : undefined) || 
-    $config["input-file"][0].split('/').reverse()[0].split('\\').reverse()[0].replace(/\.json$/, "")
+    $config["input-file-swagger"][0].split('/').reverse()[0].split('\\').reverse()[0].replace(/\.json$/, "")
 scope-openapi-document/emitter:
   input-artifact: openapi-document
   is-object: true
@@ -364,7 +369,7 @@ scope-openapi-document/emitter:
   output-uri-expr: |
     $config["output-file"] || 
     ($config.namespace ? $config.namespace.replace(/:/g,'_') : undefined) || 
-    $config["input-file"][0].split('/').reverse()[0].split('\\').reverse()[0].replace(/\.json$/, "")
+    $config["input-file-swagger"][0].split('/').reverse()[0].split('\\').reverse()[0].replace(/\.json$/, "")
 scope-cm/emitter: # can remove once every generator depends on recent modeler
   input-artifact: code-model-v1
   is-object: true
