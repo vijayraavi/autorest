@@ -37,7 +37,9 @@ const RESOLVE_MACROS_AT_RUNTIME = true;
 export interface AutoRestConfigurationImpl {
   __info?: string | null;
   "allow-no-input"?: boolean;
+  "input-file"?: string[] | string;
   "input-file-swagger"?: string[] | string;
+  "input-file-openapi"?: string[] | string;
   "base-folder"?: string;
   "directive"?: Directive[] | Directive;
   "declare-directive"?: { [name: string]: string };
@@ -374,9 +376,21 @@ export class ConfigurationView {
   }
 
   public get InputFileUris(): string[] {
-    return From<string>(ValuesOf<string>(this.config['input-file-swagger']))
-      .Select(each => this.ResolveAsPath(each))
-      .ToArray();
+    if (this.config['input-file-openapi'] !== undefined) {
+      return From<string>(ValuesOf<string>(this.config['input-file-openapi']))
+        .Select(each => this.ResolveAsPath(each))
+        .ToArray();
+    } else {
+      if (this.config['input-file-swagger'] !== undefined) {
+        return From<string>(ValuesOf<string>(this.config['input-file-swagger']))
+          .Select(each => this.ResolveAsPath(each))
+          .ToArray();
+      } else {
+        return From<string>(ValuesOf<string>(this.config['input-file']))
+          .Select(each => this.ResolveAsPath(each))
+          .ToArray();
+      }
+    }
   }
 
   public get OutputFolderUri(): string {
